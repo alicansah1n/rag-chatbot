@@ -1,0 +1,9 @@
+streamlit
+openai
+chromadb
+python-dotenv
+sentence-transformers
+pandas
+matplotlib
+seaborn
+numpy
