@@ -36,34 +36,34 @@ Bu proje, kullanıcıların **CSV formatındaki veri setlerini yükleyerek doğa
 
 ---
 
-## 📦 Kurulum
+##  Kurulum ve Çalıştırma (Local)
 
-### Gereksinimler
-- Python 3.9 veya üzeri  
-- OpenAI API Key  
-
-### 🔹 Adım 1: Repo'yu Klonlayın
+🔹 **Projeyi klonlayın:**
 ```bash
 git clone https://github.com/alicansah1n/rag-chatbot.git
 cd rag-chatbot
-
-🔹 Adım 2: Virtual Environment Oluşturun
+```
+🔹 **Adım 2: Virtual Environment Oluşturun**
+```bash
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # veya
 .venv\Scripts\activate     # Windows
-
- 🔹 Adım 3: Bağımlılıkları Yükleyin
+```
+🔹 **Adım 3: Bağımlılıkları Yükleyin**
+```bash
 pip install -r requirements.txt
-
- 🔹 Adım 4: Environment Variables Tanımlayın
+```
+🔹 **Adım 4: Environment Variables Tanımlayın**
+```bash
 OPENAI_API_KEY=your_api_key_here
-
- 🔹 Adım 5: Uygulamayı Çalıştırın
+```
+🔹 **Adım 5: Uygulamayı Çalıştırın**
+```bash
 streamlit run app.py
-
+```
 ---
-📖 Kullanım
+**📖 Kullanım**
 
 CSV dosyanızı yükleyin
 
@@ -73,7 +73,7 @@ Veri analiz özetini inceleyin
 
 Chatbot’a doğal dilde sorular sorun
 ---
-📁 Proje Yapısı
+**📁 Proje Yapısı**
 rag-chatbot/
 ├── app.py
 ├── config/
@@ -91,18 +91,19 @@ rag-chatbot/
 │   └── chatbot.py
 └── requirements.txt
 ---
-🔒 Güvenlik
+**🔒 Güvenlik**
 
 API key’ler .env dosyasında saklanır
 
 .gitignore ile gizli dosyalar korunur
 ---
-👤 Yazar
+**👤 Yazar**
 
 Ali Can Şahin
 GitHub: @alicansah1n
 
 LinkedIn: linkedin.com/in/alicansah1n
+
 
 
 
