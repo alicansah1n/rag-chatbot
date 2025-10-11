@@ -25,25 +25,6 @@ Bu proje, kullanıcıların **CSV formatındaki veri setlerini yükleyerek doğa
 
 ---
 
-## 🏗️ Mimari
-┌─────────────┐
-│ Streamlit │ ← Web Arayüzü
-└──────┬──────┘
-│
-┌──────▼──────────────────────────┐
-│ RAG Pipeline │
-│ ┌─────────────────────────┐ │
-│ │ 1. Document Processing │ │
-│ │ 2. Embedding Generation │ │
-│ │ 3. Vector Store (Chroma)│ │
-│ │ 4. Semantic Search │ │
-│ │ 5. LLM Response (GPT) │ │
-│ └─────────────────────────┘ │
-└────────────────────────────────┘
-
-
----
-
 ## 🛠️ Teknoloji Stack
 
 - **Frontend**: Streamlit  
@@ -66,19 +47,19 @@ Bu proje, kullanıcıların **CSV formatındaki veri setlerini yükleyerek doğa
 git clone https://github.com/alicansah1n/rag-chatbot.git
 cd rag-chatbot
 
-### 🔹 Adım 2: Virtual Environment Oluşturun
+🔹 Adım 2: Virtual Environment Oluşturun
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # veya
 .venv\Scripts\activate     # Windows
 
-### 🔹 Adım 3: Bağımlılıkları Yükleyin
+ 🔹 Adım 3: Bağımlılıkları Yükleyin
 pip install -r requirements.txt
 
-### 🔹 Adım 4: Environment Variables Tanımlayın
+ 🔹 Adım 4: Environment Variables Tanımlayın
 OPENAI_API_KEY=your_api_key_here
 
-### 🔹 Adım 5: Uygulamayı Çalıştırın
+ 🔹 Adım 5: Uygulamayı Çalıştırın
 streamlit run app.py
 
 ---
@@ -122,6 +103,7 @@ Ali Can Şahin
 GitHub: @alicansah1n
 
 LinkedIn: linkedin.com/in/alicansah1n
+
 
 
 
