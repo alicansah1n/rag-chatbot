@@ -63,7 +63,7 @@ OPENAI_API_KEY=your_api_key_here
 streamlit run app.py
 ```
 ---
-**📖 Kullanım**
+📖 Kullanım
 
 CSV dosyanızı yükleyin
 
@@ -73,7 +73,7 @@ Veri analiz özetini inceleyin
 
 Chatbot’a doğal dilde sorular sorun
 ---
-**📁 Proje Yapısı**
+📁 Proje Yapısı
 rag-chatbot/
 ├── app.py
 ├── config/
@@ -91,18 +91,19 @@ rag-chatbot/
 │   └── chatbot.py
 └── requirements.txt
 ---
-**🔒 Güvenlik**
+🔒 Güvenlik
 
 API key’ler .env dosyasında saklanır
 
 .gitignore ile gizli dosyalar korunur
 ---
-**👤 Yazar**
+👤 Yazar
 
 Ali Can Şahin
 GitHub: @alicansah1n
 
 LinkedIn: linkedin.com/in/alicansah1n
+
 
 
 
