@@ -1,227 +1,344 @@
-<<<<<<< HEAD
-# 🤖 RAG-Based Document QA Chatbot
+# 🤖 RAG-Based Data Analysis & Question-Answering Platform
 
-> **Retrieval-Augmented Generation (RAG)** tabanlı, CSV veri setleri üzerinde çalışan akıllı chatbot sistemi.
+<div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
----
+**Herhangi bir CSV veri seti üzerinde doğal dil ile sorgulama yapabilen AI-powered analiz platformu**
 
-## 📌 Proje Hakkında
+[🚀 Demo](#-demo) • [✨ Özellikler](#-özellikler) • [📦 Kurulum](#-kurulum) • [📖 Kullanım](#-kullanım) • [🛠️ Teknolojiler](#️-teknoloji-stack)
 
-Bu proje, kullanıcıların **CSV formatındaki veri setlerini yükleyerek doğal dil ile sorgulama yapabilmesini** sağlayan bir **RAG (Retrieval-Augmented Generation)** chatbot uygulamasıdır.
-
----
-
-## ✨ Özellikler
-
-- 📊 **Veri Analizi**: İstatistiksel özet, korelasyon analizi, görselleştirmeler  
-- 🤖 **AI-Powered İçgörüler**: GPT ile otomatik veri analizi  
-- 💬 **Doğal Dil Sorguları**: Veri setinize doğal dilde soru sorun  
-- 🔍 **Semantic Search**: Vektör tabanlı akıllı arama  
-- 📈 **Görselleştirme**: Histogram, box plot, scatter plot  
-- 🎯 **Clean Code**: Modüler ve sürdürülebilir mimari  
-
----
-
-## 🛠️ Teknoloji Stack
-
-- **Frontend**: Streamlit  
-- **LLM**: OpenAI GPT-3.5-turbo  
-- **Embeddings**: SentenceTransformers (`all-MiniLM-L6-v2`)  
-- **Vector Database**: ChromaDB  
-- **Veri Analizi**: Pandas, Matplotlib, Seaborn  
-- **Dil**: Python 3.9+  
-
----
-
-##  Kurulum ve Çalıştırma (Local)
-
-🔹 **Projeyi klonlayın:**
-```bash
-git clone https://github.com/alicansah1n/rag-chatbot.git
-cd rag-chatbot
-```
-🔹 **Adım 2: Virtual Environment Oluşturun**
-```bash
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# veya
-.venv\Scripts\activate     # Windows
-```
-🔹 **Adım 3: Bağımlılıkları Yükleyin**
-```bash
-pip install -r requirements.txt
-```
-🔹 **Adım 4: Environment Variables Tanımlayın**
-```bash
-OPENAI_API_KEY=your_api_key_here
-```
-🔹 **Adım 5: Uygulamayı Çalıştırın**
-```bash
-streamlit run app.py
-```
----
-📖 Kullanım
-
-CSV dosyanızı yükleyin
-
-Veri analiz özetini inceleyin
-
-“Veriyi İşle” butonuna tıklayın
-
-Chatbot’a doğal dilde sorular sorun
----
-📁 Proje Yapısı
-rag-chatbot/
-├── app.py
-├── config/
-│   └── settings.py
-├── utils/
-│   ├── data_loader.py
-│   ├── embeddings.py
-│   ├── vector_store.py
-│   └── llm_handler.py
-├── components/
-│   ├── sidebar.py
-│   ├── data_preview.py
-│   ├── analysis.py
-│   ├── rag_processor.py
-│   └── chatbot.py
-└── requirements.txt
----
-🔒 Güvenlik
-
-API key’ler .env dosyasında saklanır
-
-.gitignore ile gizli dosyalar korunur
----
-👤 Yazar
-
-Ali Can Şahin
-GitHub: @alicansah1n
-
-LinkedIn: linkedin.com/in/alicansah1n
-
-
-
-unutmaaaaaaaaaaaaaaaaaaaaaaaaaaa: api keyini sil!!!!!!!!!!
-
-
-
-=======
-# 🤖 RAG-Based Document QA Chatbot
-
-> **Retrieval-Augmented Generation (RAG)** tabanlı, CSV veri setleri üzerinde çalışan akıllı chatbot sistemi.
-
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+</div>
 
 ---
 
 ## 📌 Proje Hakkında
 
-Bu proje, kullanıcıların **CSV formatındaki veri setlerini yükleyerek doğal dil ile sorgulama yapabilmesini** sağlayan bir **RAG (Retrieval-Augmented Generation)** chatbot uygulamasıdır.
+Bu proje, **Retrieval-Augmented Generation (RAG)** mimarisi kullanarak CSV veri setleri üzerinde akıllı analiz ve sorgulama yapabilen bir platformdur. Kullanıcılar veri setlerini yükleyerek:
+
+- 🔍 **Semantic search** ile anlamsal arama yapabilir
+- 💬 **Doğal dil** ile verilerine soru sorabilir
+- 📊 **Otomatik analiz** ve görselleştirme alabilir
+- 🤖 **AI-powered insights** ile veri içgörüleri elde edebilir
+
+**Kullanım Alanları:**
+- İş analitiği ve raporlama
+- Veri keşfi (Exploratory Data Analysis)
+- Hızlı veri sorgulama ve filtreleme
+- Akademik araştırma ve veri analizi
 
 ---
 
 ## ✨ Özellikler
 
-- 📊 **Veri Analizi**: İstatistiksel özet, korelasyon analizi, görselleştirmeler  
-- 🤖 **AI-Powered İçgörüler**: GPT ile otomatik veri analizi  
-- 💬 **Doğal Dil Sorguları**: Veri setinize doğal dilde soru sorun  
-- 🔍 **Semantic Search**: Vektör tabanlı akıllı arama  
-- 📈 **Görselleştirme**: Histogram, box plot, scatter plot  
-- 🎯 **Clean Code**: Modüler ve sürdürülebilir mimari  
+### 🎯 Temel Özellikler
+- **📂 CSV Yükleme**: Herhangi bir CSV dosyasını yükleyin ve anında analiz edin
+- **🔍 RAG Architecture**: Retrieval-Augmented Generation ile semantic search
+- **💬 Doğal Dil Sorguları**: "En çok kazanan müşteri kim?" gibi sorular sorun
+- **🧠 Context-Aware Responses**: Önceki konuşmaları hatırlayan akıllı chatbot
+
+### 📊 Veri Analizi
+- **İstatistiksel Özet**: Otomatik EDA (Exploratory Data Analysis)
+- **Korelasyon Analizi**: Değişkenler arası ilişkileri keşfedin
+- **10+ Görselleştirme**: Histogram, box plot, scatter plot, heatmap, distribution analysis
+- **Missing Value Analysis**: Eksik veri tespiti ve görselleştirme
+
+### 🤖 AI-Powered Özellikler
+- **GPT-3.5-turbo Entegrasyonu**: Akıllı cevap üretimi
+- **Grafik Yorumlama**: AI ile otomatik grafik analizi
+- **Insight Generation**: Veri içgörüleri ve öneriler
+- **Custom Embeddings**: Sentence Transformers ile vektör oluşturma
+
+### 🎨 Modern UI/UX
+- **Responsive Tasarım**: Modern glassmorphism dark theme
+- **Custom CSS**: Profesyonel ve şık görünüm
+- **Interactive Charts**: Plotly ile interaktif grafikler
+- **Real-time Updates**: Anlık veri güncellemeleri
 
 ---
 
 ## 🛠️ Teknoloji Stack
 
-- **Frontend**: Streamlit  
-- **LLM**: OpenAI GPT-3.5-turbo  
-- **Embeddings**: SentenceTransformers (`all-MiniLM-L6-v2`)  
-- **Vector Database**: ChromaDB  
-- **Veri Analizi**: Pandas, Matplotlib, Seaborn  
-- **Dil**: Python 3.9+  
+### Backend & AI
+| Teknoloji | Kullanım Amacı |
+|-----------|----------------|
+| **Python 3.9+** | Ana programlama dili |
+| **OpenAI GPT-3.5-turbo** | Doğal dil işleme ve cevap üretimi |
+| **Sentence Transformers** | Text embedding (all-MiniLM-L6-v2) |
+| **ChromaDB** | Vector database - semantic search |
+| **LangChain** | RAG pipeline yönetimi |
+
+### Data Processing & Visualization
+| Teknoloji | Kullanım Amacı |
+|-----------|----------------|
+| **Pandas** | Veri manipülasyonu |
+| **NumPy** | Sayısal işlemler |
+| **Plotly** | İnteraktif görselleştirme |
+| **Matplotlib & Seaborn** | İstatistiksel grafikler |
+
+### Frontend & Deployment
+| Teknoloji | Kullanım Amacı |
+|-----------|----------------|
+| **Streamlit** | Web arayüzü framework |
+| **Custom CSS** | Modern UI/UX tasarımı |
 
 ---
 
-##  Kurulum ve Çalıştırma (Local)
+## 📦 Kurulum
 
-🔹 **Projeyi klonlayın:**
+### Gereksinimler
+- Python 3.9 veya üzeri
+- OpenAI API Key
+- 2GB+ RAM (önerilen)
+
+### Adım 1: Projeyi Klonlayın
+
 ```bash
 git clone https://github.com/alicansah1n/rag-chatbot.git
 cd rag-chatbot
 ```
-🔹 **Adım 2: Virtual Environment Oluşturun**
+
+### Adım 2: Virtual Environment Oluşturun
+
+**Linux/Mac:**
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# veya
-.venv\Scripts\activate     # Windows
+source .venv/bin/activate
 ```
-🔹 **Adım 3: Bağımlılıkları Yükleyin**
+
+**Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### Adım 3: Bağımlılıkları Yükleyin
+
 ```bash
 pip install -r requirements.txt
 ```
-🔹 **Adım 4: Environment Variables Tanımlayın**
-```bash
-OPENAI_API_KEY=your_api_key_here
+
+### Adım 4: Environment Variables Ayarlayın
+
+Proje kök dizininde `.env` dosyası oluşturun:
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
 ```
-🔹 **Adım 5: Uygulamayı Çalıştırın**
+
+⚠️ **ÖNEMLİ:** API key'inizi asla GitHub'a pushlamayın! `.gitignore` dosyasında `.env` bulunduğundan emin olun.
+
+### Adım 5: Uygulamayı Çalıştırın
+
 ```bash
 streamlit run app.py
 ```
+
+Tarayıcınızda otomatik olarak `http://localhost:8501` açılacaktır.
+
 ---
-📖 Kullanım
 
-CSV dosyanızı yükleyin
+## 📖 Kullanım
 
-Veri analiz özetini inceleyin
+### 1️⃣ Veri Yükleme
+- Sidebar'dan **"CSV dosyanızı seçin"** butonuna tıklayın
+- Maksimum 200MB boyutunda CSV dosyası yükleyebilirsiniz
+- Desteklenen format: UTF-8 encoded CSV
 
-“Veriyi İşle” butonuna tıklayın
+### 2️⃣ Veri Önizleme ve Analiz
+- Yüklenen veri otomatik olarak analiz edilir
+- **Veri Seti Bilgileri**: Satır/sütun sayısı, veri tipleri
+- **İstatistiksel Özet**: Mean, median, std, min/max değerler
+- **İlk 5 Satır**: Veri önizleme
 
-Chatbot’a doğal dilde sorular sorun
+### 3️⃣ Veri İşleme (RAG Pipeline)
+- **"Veriyi İşle ve Chatbot'u Başlat"** butonuna tıklayın
+- Veriler vektörlere dönüştürülür (embedding)
+- ChromaDB'ye kaydedilir
+- Chatbot kullanıma hazır hale gelir
+
+### 4️⃣ Chatbot ile Sorgulama
+
+**Örnek Sorular:**
+```
+"En yüksek satış yapan müşteri kim?"
+"Yaş ortalaması nedir?"
+"Kadın müşterilerin toplam harcaması ne kadar?"
+"Hangi kategoride en çok satış var?"
+```
+
+### 5️⃣ Veri Analizi Sekmeleri
+
+#### 📊 İstatistiksel Özet
+- Sayısal değişkenler için describe() çıktısı
+- Kategorik değişkenler için frekans tabloları
+
+#### 🔗 Korelasyon Analizi
+- Pearson korelasyon matrisi
+- Interaktif heatmap görselleştirmesi
+
+#### 📈 Görselleştirmeler
+10+ farklı grafik türü:
+- Histogram, Box Plot, Scatter Plot
+- Scatter Matrix, Distribution Plot
+- Pair Plot, Violin Plot, vb.
+
+#### 💡 AI İçgörüler
+- GPT-powered grafik yorumları
+- Otomatik pattern detection
+- Actionable insights
+
 ---
-📁 Proje Yapısı
+
+## 📁 Proje Yapısı
+
+```
 rag-chatbot/
-├── app.py
-├── config/
-│   └── settings.py
-├── utils/
-│   ├── data_loader.py
-│   ├── embeddings.py
-│   ├── vector_store.py
-│   └── llm_handler.py
-├── components/
-│   ├── sidebar.py
-│   ├── data_preview.py
-│   ├── analysis.py
-│   ├── rag_processor.py
-│   └── chatbot.py
-└── requirements.txt
+├── 📄 app.py                    # Ana uygulama dosyası
+├── 📁 config/
+│   └── settings.py              # Konfigürasyon ayarları
+├── 📁 utils/
+│   ├── data_loader.py           # CSV yükleme ve validasyon
+│   ├── embeddings.py            # Text embedding işlemleri
+│   ├── vector_store.py          # ChromaDB yönetimi
+│   └── llm_handler.py           # OpenAI API entegrasyonu
+├── 📁 components/
+│   ├── sidebar.py               # Sidebar komponenti
+│   ├── data_preview.py          # Veri önizleme
+│   ├── analysis.py              # İstatistiksel analiz
+│   ├── rag_processor.py         # RAG pipeline
+│   └── chatbot.py               # Chat arayüzü
+├── 📁 styles/
+│   └── custom.css               # Özel CSS tasarımı
+├── 📄 requirements.txt          # Python bağımlılıkları
+├── 📄 .env.example              # Environment variables örneği
+├── 📄 .gitignore                # Git ignore kuralları
+└── 📄 README.md                 # Proje dokümantasyonu
+```
+
 ---
-🔒 Güvenlik
 
-API key’ler .env dosyasında saklanır
+## 🎨 Özelleştirme
 
-.gitignore ile gizli dosyalar korunur
+### Model Ayarları
+
+`config/settings.py` dosyasından değiştirebilirsiniz:
+
+```python
+# LLM Ayarları
+LLM_MODEL = "gpt-3.5-turbo"
+LLM_TEMPERATURE = 0.3          # 0 (robotik) - 1 (yaratıcı)
+LLM_MAX_TOKENS = 800           # Maksimum cevap uzunluğu
+
+# RAG Ayarları
+TOP_K_RESULTS = 5              # Semantic search sonuç sayısı
+BATCH_SIZE = 100               # Veri işleme batch boyutu
+```
+
+### CSS Tema Değiştirme
+
+`styles/custom.css` dosyasından renk ve tasarımı özelleştirebilirsiniz.
+
 ---
-👤 Yazar
 
-Ali Can Şahin
-GitHub: @alicansah1n
+## 🔒 Güvenlik
 
-LinkedIn: linkedin.com/in/alicansah1n
+- ✅ API key'ler `.env` dosyasında saklanır
+- ✅ `.gitignore` ile hassas dosyalar korunur
+- ✅ Environment variables ile güvenli deployment
+- ⚠️ API key'i asla kod içine yazmayın
+- ⚠️ `.env` dosyasını GitHub'a pushlamayın
 
+---
 
+## 🚀 Deployment
 
-unutmaaaaaaaaaaaaaaaaaaaaaaaaaaa: api keyini sil!!!!!!!!!!
+### Streamlit Cloud
 
+1. Projeyi GitHub'a pushlayın
+2. [Streamlit Cloud](https://streamlit.io/cloud)'a gidin
+3. Repository'nizi seçin
+4. Secrets bölümüne `OPENAI_API_KEY` ekleyin
+5. Deploy!
 
+### Docker (Opsiyonel)
 
->>>>>>> 3633c2799da0cc2c2423acf6b23f3bdeabab126b
+```bash
+# Dockerfile oluşturun
+docker build -t rag-chatbot .
+docker run -p 8501:8501 rag-chatbot
+```
+
+---
+
+## 🐛 Sorun Giderme
+
+### Sık Karşılaşılan Hatalar
+
+**1. ModuleNotFoundError**
+```bash
+pip install -r requirements.txt
+```
+
+**2. OpenAI API Error**
+- `.env` dosyasında `OPENAI_API_KEY` doğru mu kontrol edin
+- API key'inizin aktif ve kredisi olduğundan emin olun
+
+**3. ChromaDB Error**
+```bash
+pip install --upgrade chromadb
+```
+
+**4. Encoding Hatası (CSV)**
+- CSV dosyanızın UTF-8 encoded olduğundan emin olun
+- Excel'de: "Save As" → "CSV UTF-8"
+
+---
+
+## 🤝 Katkıda Bulunma
+
+Katkılarınızı bekliyoruz! Şu adımları izleyin:
+
+1. Fork yapın
+2. Feature branch oluşturun (`git checkout -b feature/AmazingFeature`)
+3. Commit edin (`git commit -m 'feat: Add amazing feature'`)
+4. Push edin (`git push origin feature/AmazingFeature`)
+5. Pull Request açın
+
+---
+
+## 📝 Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
+
+---
+
+## 👤 Yazar
+
+**Ali Can Şahin**
+
+- 🌐 GitHub: [@alicansah1n](https://github.com/alicansah1n)
+- 💼 LinkedIn: [linkedin.com/in/alicansahinn](https://linkedin.com/in/alicansahinn)
+- 📧 Email: alican.sahin.tr@gmail.com
+
+---
+
+## 🙏 Teşekkürler
+
+Bu proje aşağıdaki açık kaynak projelerden ilham almıştır:
+- [LangChain](https://github.com/langchain-ai/langchain)
+- [Streamlit](https://github.com/streamlit/streamlit)
+- [ChromaDB](https://github.com/chroma-core/chroma)
+
+---
+
+<div align="center">
+
+**⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!**
+
+Made with ❤️ by [Ali Can Şahin](https://github.com/alicansah1n)
+
+</div>
