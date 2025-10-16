@@ -286,14 +286,7 @@ pip install --upgrade chromadb
 - 📧 Email: alican.sahin.tr@gmail.com
 
 ---
-
-## 🙏 Teşekkürler
-
-Bu proje aşağıdaki açık kaynak projelerden ilham almıştır:
-- [LangChain](https://github.com/langchain-ai/langchain)
-- [Streamlit](https://github.com/streamlit/streamlit)
-- [ChromaDB](https://github.com/chroma-core/chroma)
-
+## 🙏 Okuduğunuz için Teşekkür Ederim..
 ---
 
 <div align="center">
