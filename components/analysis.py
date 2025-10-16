@@ -22,7 +22,7 @@ def render_statistical_summary(df: pd.DataFrame, numeric_cols: list, categorical
     """
     st.subheader("📊 İstatistiksel Özet")
     
-    # Sayısal sütunlar
+    # Sayısal sütunları belirleyelim.
     if len(numeric_cols) > 0:
         st.write("### 🔢 Sayısal Sütunlar")
         st.dataframe(df[numeric_cols].describe().T, use_container_width=True)
@@ -946,7 +946,7 @@ def render_ai_insights(df: pd.DataFrame, numeric_cols: list, categorical_cols: l
     st.subheader("💡 AI-Powered İçgörüler")
     st.write("GPT, veri setinizi analiz ederek otomatik içgörüler ve öneriler üretir.")
     
-    if st.button("🤖 Analiz Et", type="primary", key="ai_insights"):
+    if st.button("Analiz Et", type="primary", key="ai_insights"):
         with st.spinner("🔍 Veri seti analiz ediliyor..."):
             load_dotenv()
             api_key = os.getenv("OPENAI_API_KEY")
@@ -986,7 +986,8 @@ Sayısal İstatistikler:
 2. İş/bilim açısından ne anlama geldiğini açıkla
 3. 3 actionable öneri sun
 4. Dikkat edilmesi gereken noktaları belirt
-
+5- Açıklamalar kısa ve net olsun.
+6- Yanıtı madde madde ver.
 {summary}"""
                             }
                         ],

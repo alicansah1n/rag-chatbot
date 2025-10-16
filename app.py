@@ -5,6 +5,7 @@ Modüler ve Clean Code prensiplerine uygun yapı
 import streamlit as st
 import pandas as pd
 
+
 # Config
 from config.settings import PAGE_TITLE, PAGE_ICON, LAYOUT
 
@@ -17,6 +18,12 @@ from components.chatbot import render_chatbot_interface
 
 # Utils
 from utils.data_loader import load_csv
+
+
+# CSS dosyasını yükleme - YÖNTEm 1: Harici dosyadan
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 
 def initialize_session_state():
@@ -33,13 +40,16 @@ def main():
         page_icon=PAGE_ICON,
         layout=LAYOUT
     )
-    
+
+
+    # CSS'i uygula
+    load_css('styles/custom.css')
     # Session state başlat
     initialize_session_state()
     
     # Başlık
-    st.title(f"{PAGE_ICON} {PAGE_TITLE} - CSV Veri Seti")
-    st.write("Veri setinizi yükleyin ve sorular sorun!")
+    st.title(f"{PAGE_ICON} {PAGE_TITLE} - Veri Analiz ve Chatbot")
+    st.write("Veri setinizi yükleyin, analizleri inceleyin ve yapmak istediğiniz işlemler için sorular sorun!")
     
     # Sidebar - Dosya yükleme
     uploaded_file = render_sidebar()
