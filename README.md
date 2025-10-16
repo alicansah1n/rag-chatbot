@@ -254,26 +254,6 @@ BATCH_SIZE = 100               # Veri işleme batch boyutu
 
 ---
 
-## 🚀 Deployment
-
-### Streamlit Cloud
-
-1. Projeyi GitHub'a pushlayın
-2. [Streamlit Cloud](https://streamlit.io/cloud)'a gidin
-3. Repository'nizi seçin
-4. Secrets bölümüne `OPENAI_API_KEY` ekleyin
-5. Deploy!
-
-### Docker (Opsiyonel)
-
-```bash
-# Dockerfile oluşturun
-docker build -t rag-chatbot .
-docker run -p 8501:8501 rag-chatbot
-```
-
----
-
 ## 🐛 Sorun Giderme
 
 ### Sık Karşılaşılan Hatalar
@@ -296,25 +276,6 @@ pip install --upgrade chromadb
 - CSV dosyanızın UTF-8 encoded olduğundan emin olun
 - Excel'de: "Save As" → "CSV UTF-8"
 
----
-
-## 🤝 Katkıda Bulunma
-
-Katkılarınızı bekliyoruz! Şu adımları izleyin:
-
-1. Fork yapın
-2. Feature branch oluşturun (`git checkout -b feature/AmazingFeature`)
-3. Commit edin (`git commit -m 'feat: Add amazing feature'`)
-4. Push edin (`git push origin feature/AmazingFeature`)
-5. Pull Request açın
-
----
-
-## 📝 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
-
----
 
 ## 👤 Yazar
 
@@ -338,7 +299,5 @@ Bu proje aşağıdaki açık kaynak projelerden ilham almıştır:
 <div align="center">
 
 **⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!**
-
-Made with ❤️ by [Ali Can Şahin](https://github.com/alicansah1n)
 
 </div>
