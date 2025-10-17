@@ -128,7 +128,7 @@ Proje kök dizininde `.env` dosyası oluşturun:
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-⚠️ **ÖNEMLİ:** API key'inizi asla GitHub'a pushlamayın! `.gitignore` dosyasında `.env` bulunduğundan emin olun.
+⚠️ **ÖNEMLİ:** `.gitignore` dosyasında `.env` bulunduğundan emin olun.
 
 ### Adım 5: Uygulamayı Çalıştırın
 
