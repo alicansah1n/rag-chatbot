@@ -6,7 +6,7 @@ Herhangi bir CSV veri seti ile çalışabilen akıllı analiz sistemi
 # ═══════════════════════════════════════════
 # 📱 SAYFA AYARLARI
 # ═══════════════════════════════════════════
-PAGE_TITLE = "RAG Data Analyst"        # veya "Akıllı Veri Analiz Platformu"
+PAGE_TITLE = "RAG Akıllı Veri Analiz Platformu"        # veya "Akıllı Veri Analiz Platformu"
 PAGE_ICON = "🔍"                        # veya "📊" "🧠" "⚡"
 LAYOUT = "wide"
 
