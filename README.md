@@ -51,8 +51,6 @@
 ![AI Insights](assets/screenshots/charts3.png)
 *GPT-powered grafik yorumlama ve otomatik içgörüler*
 
-=======
->>>>>>> fc937d0bd15bee486d6e0f45192d97450cfb6cc5
 </div>
 
 ---
