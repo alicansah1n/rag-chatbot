@@ -10,6 +10,21 @@
 
 [🚀 Demo](#-demo) • [✨ Özellikler](#-özellikler) • [📦 Kurulum](#-kurulum) • [📖 Kullanım](#-kullanım) • [🛠️ Teknolojiler](#️-teknoloji-stack)
 
+---
+
+## 🎬 Video Demo
+
+<div align="center">
+
+[![RAG Chatbot - Full Demo](https://cdn.loom.com/sessions/thumbnails/e65aefd5ad88412eb6cb63b6e0a72c82-with-play.gif)](https://www.loom.com/share/e65aefd5ad88412eb6cb63b6e0a72c82?sid=ef5d2676-17bd-486a-bab3-c237cbbe3d76)
+
+**🎥 Projenin tam özellik tanıtımı**
+
+*CSV yükleme, veri analizi, chatbot kullanımı ve AI-powered görselleştirmeler*
+
+[▶️ Loom'da İzle](https://www.loom.com/share/e65aefd5ad88412eb6cb63b6e0a72c82?sid=ef5d2676-17bd-486a-bab3-c237cbbe3d76)
+
+</div>
 
 ---
 
