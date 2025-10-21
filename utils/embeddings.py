@@ -30,30 +30,25 @@ def create_embeddings_batch(
 ) -> np.ndarray:
     """
     Metinleri batch'ler halinde embedding'lere çevirir.
-    
-    Args:
-        texts: Metin listesi
-        model: Embedding modeli
-        batch_size: Batch boyutu
-        progress_callback: İlerleme callback fonksiyonu
-        
-    Returns:
-        np.ndarray: Embedding array
     """
     embeddings_list = []
     start_time = time.time()
     
-    # Güvenli batch size (büyük veri setleri için)
-    safe_batch_size = min(batch_size, 50)
+    # Çok küçük batch size kullan
+    safe_batch_size = 32  # 50'den 32'ye düşürdük
     
     for i in range(0, len(texts), safe_batch_size):
         batch = texts[i:i + safe_batch_size]
-        batch_embeddings = model.encode(
-            batch, 
-            show_progress_bar=False,
-            batch_size=16
-        )
-        embeddings_list.extend(batch_embeddings)
+        
+        # Her batch'i daha da küçük parçalara böl
+        for j in range(0, len(batch), 8):  # 8'er 8'er işle
+            mini_batch = batch[j:j + 8]
+            mini_embeddings = model.encode(
+                mini_batch, 
+                show_progress_bar=False,
+                batch_size=8
+            )
+            embeddings_list.extend(mini_embeddings)
         
         if progress_callback:
             current = min(i + safe_batch_size, len(texts))

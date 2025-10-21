@@ -54,7 +54,7 @@ def add_documents_to_collection(
     texts: List[str]
 ):
     """
-    Dökümanları collection'a ekler.
+    Dökümanları collection'a ekler (batch'ler halinde).
     
     Args:
         collection: ChromaDB collection
@@ -62,12 +62,18 @@ def add_documents_to_collection(
         embeddings: Embedding array
         texts: Metin listesi
     """
-    collection.add(
-        ids=[doc['id'] for doc in documents],
-        embeddings=embeddings.tolist(),
-        documents=texts,
-        metadatas=[doc['metadata'] for doc in documents]
-    )
+    # ChromaDB için güvenli batch size
+    batch_size = 5000
+    
+    for i in range(0, len(documents), batch_size):
+        end_idx = min(i + batch_size, len(documents))
+        
+        collection.add(
+            ids=[doc['id'] for doc in documents[i:end_idx]],
+            embeddings=embeddings[i:end_idx].tolist(),
+            documents=texts[i:end_idx],
+            metadatas=[doc['metadata'] for doc in documents[i:end_idx]]
+        )
 
 
 def query_collection(
