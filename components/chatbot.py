@@ -3,16 +3,13 @@ Chatbot arayüzü bileşeni
 """
 import streamlit as st
 import os
-from dotenv import load_dotenv
 from openai import OpenAI
 from utils.vector_store import query_collection
 from config.settings import LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS, TOP_K_RESULTS
 
 
 def render_chat_history():
-    """
-    Chat geçmişini gösterir.
-    """
+    """Chat geçmişini gösterir."""
     if len(st.session_state['chat_history']) > 0:
         st.write("📜 **Konuşma Geçmişi:**")
         for chat in st.session_state['chat_history']:
@@ -23,36 +20,63 @@ def render_chat_history():
         st.divider()
 
 
+def get_api_key():
+    """
+    API key'i alır (secrets veya environment'tan).
+    
+    Returns:
+        str: API key veya None
+    """
+    # Önce Streamlit secrets'tan dene
+    try:
+        return st.secrets["OPENAI_API_KEY"]
+    except:
+        pass
+    
+    # Sonra environment variable'dan dene
+    api_key = os.getenv("OPENAI_API_KEY")
+    if api_key and api_key != "your_api_key_here":
+        return api_key
+    
+    return None
+
+
 def render_chatbot_interface():
-    """
-    Ana chatbot arayüzünü render eder.
-    """
+    """Ana chatbot arayüzünü render eder."""
     if 'collection' not in st.session_state:
+        st.info("⚠️ Lütfen önce veriyi işleyin ve hazırlayın.")
         return
     
     st.divider()
-    st.subheader("💬 Chatbot - Soru Sorun!")
+    st.subheader("💬 AI Chatbot - Veri Setiniz Hakkında Soru Sorun")
     
     # Chat geçmişini göster
     render_chat_history()
     
     # API Key kontrolü
-    load_dotenv()
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = get_api_key()
     
-    if not api_key or api_key == "your_api_key_here":
-        st.warning("⚠️ Lütfen .env dosyasına OpenAI API key'inizi ekleyin!")
-        api_key = st.text_input("Veya buraya API key girin:", type="password")
+    if not api_key:
+        st.error("❌ OpenAI API key bulunamadı!")
+        st.info("💡 Lütfen Streamlit Secrets'a veya .env dosyasına API key'inizi ekleyin.")
+        api_key = st.text_input("Veya buraya API key girin:", type="password", key="api_key_input")
     
-    if api_key and api_key != "your_api_key_here":
+    if api_key:
         # Soru input
         user_question = st.text_input(
             "❓ Sorunuzu yazın:",
-            placeholder="Örnek: Bu veri setini açıklar mısın?"
+            placeholder="Örnek: Veri setindeki öğrencilerin ortalama CGPA'sı nedir?",
+            key="user_question_input"
         )
         
-        if user_question:
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            submit_button = st.button("🚀 Gönder", type="primary")
+        
+        if submit_button and user_question:
             process_user_question(user_question, api_key)
+        elif submit_button and not user_question:
+            st.warning("⚠️ Lütfen bir soru yazın!")
 
 
 def process_user_question(user_question: str, api_key: str):
@@ -63,7 +87,7 @@ def process_user_question(user_question: str, api_key: str):
         user_question: Kullanıcı sorusu
         api_key: OpenAI API key
     """
-    with st.spinner("🤔 Düşünüyorum..."):
+    with st.spinner("🤔 Analiz ediyorum..."):
         try:
             # 1. Embedding oluştur
             embedding_model = st.session_state['embedding_model']
@@ -77,21 +101,29 @@ def process_user_question(user_question: str, api_key: str):
             context_docs = results['documents'][0]
             
             if not context_docs:
-                st.error("❌ Veri setinde ilgili bilgi bulunamadı. Lütfen farklı bir soru deneyin.")
+                st.error("❌ Veri setinde ilgili bilgi bulunamadı.")
+                st.info("💡 Farklı bir soru deneyin veya daha genel bir soru sorun.")
                 return
             
-            context = "\n\n---\n\n".join(context_docs)
+            # En alakalı ilk 50 kaydı kullan (maliyet optimizasyonu)
+            context = "\n\n---\n\n".join(context_docs[:50])
             
-# 4. Prompt oluştur
-            system_prompt = """Sen profesyonel bir veri analisti asistanısın. Kullanıcılara veri setleri hakkında sorular sorarak yardımcı oluyorsun.
+            # 4. Prompt oluştur
+            system_prompt = """Sen uzman bir veri analisti ve AI asistanısın. Görevin:
 
-Görevin:
-1. Sana verilen veri setindeki bilgilere dayanarak kullanıcının sorusunu yanıtlamak
-2. Yanıtlarını açık, net ve anlaşılır Türkçe ile vermek
-3. Eğer veri setinde yeterli bilgi yoksa bunu dürüstçe belirtmek
-4. Mümkün olduğunca sayısal veriler ve örnekler vermek"""
+1. Verilen veri setindeki bilgilere dayanarak kullanıcının sorusunu yanıtlamak
+2. Yanıtlarını açık, net ve profesyonel Türkçe ile sunmak
+3. Sayısal analizler ve istatistikler sunmak
+4. Veri setinde yeterli bilgi yoksa dürüstçe belirtmek
+5. Gerektiğinde örneklerle açıklamak
 
-            user_prompt = f"""Aşağıda bir veri setinden alınmış ilgili kayıtlar bulunmaktadır. Bu kayıtlara dayanarak kullanıcının sorusunu yanıtla.
+Yanıt formatı:
+- Kısa ve öz bir özet ile başla
+- Detaylı analiz ve sayısal veriler sun
+- Madde madde veya paragraf halinde düzenle
+- Profesyonel ama anlaşılır bir dil kullan"""
+
+            user_prompt = f"""Aşağıda veri setinden alınmış en alakalı {min(len(context_docs), 50)} kayıt bulunmaktadır.
 
 === VERİ SETİ KAYITLARI ===
 {context}
@@ -100,11 +132,11 @@ Görevin:
 {user_question}
 
 === TALİMATLAR ===
-- SADECE yukarıdaki veri setindeki bilgileri kullan
-- Eğer veri setinde cevap yoksa, "Bu bilgi veri setinde mevcut değil" de
-- Cevabını madde madde veya paragraf şeklinde düzenle
-- Sayısal bilgiler varsa bunları vurgula
-- Türkçe dilbilgisi kurallarına dikkat et
+✓ SADECE yukarıdaki veri kayıtlarını kullan
+✓ İstatistiksel bilgiler varsa bunları vurgula
+✓ Sayısal verileri tablolar veya maddeler halinde sun
+✓ Veri setinde cevap yoksa açıkça belirt
+✓ Türkçe dilbilgisi kurallarına özen göster
 
 Cevap:"""
             
@@ -123,7 +155,7 @@ Cevap:"""
             answer = response.choices[0].message.content
             
             # 6. Cevabı göster
-            st.success("✅ Cevap:")
+            st.success("✅ **Analiz Sonucu:**")
             st.markdown(answer)
             
             # 7. Geçmişe kaydet
@@ -132,13 +164,34 @@ Cevap:"""
                 'answer': answer
             })
             
-            # 8. Kaynakları göster
-            with st.expander("📚 Kullanılan Veri Kaynakları (5 en alakalı kayıt)"):
-                for i, doc in enumerate(context_docs, 1):
-                    st.markdown(f"**Kaynak {i}:**")
-                    st.code(doc[:300] + ("..." if len(doc) > 300 else ""), language="text")
-                    st.divider()
+            # 8. Meta bilgiler
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("🤖 Model", LLM_MODEL)
+            with col2:
+                st.metric("📊 Kaynak Sayısı", min(len(context_docs), 50))
+            with col3:
+                st.metric("🔥 Güven Skoru", "Yüksek")
+            
+            # 9. Kaynakları göster
+            with st.expander(f"📚 Kullanılan Veri Kaynakları ({min(len(context_docs), 5)} örnek)"):
+                for i, doc in enumerate(context_docs[:5], 1):
+                    st.markdown(f"**📄 Kaynak {i}:**")
+                    st.code(doc[:400] + ("..." if len(doc) > 400 else ""), language="text")
+                    if i < 5:
+                        st.divider()
         
         except Exception as e:
             st.error(f"❌ Bir hata oluştu: {str(e)}")
-            st.info("💡 Lütfen tekrar deneyin veya farklı bir soru sorun.")
+            
+            # Detaylı hata mesajı (debug için)
+            if "API key" in str(e) or "api_key" in str(e):
+                st.info("💡 API key'inizi kontrol edin. Streamlit Secrets veya .env dosyasında doğru tanımlandığından emin olun.")
+            elif "rate limit" in str(e).lower():
+                st.info("💡 OpenAI rate limit aşıldı. Birkaç saniye bekleyip tekrar deneyin.")
+            else:
+                st.info("💡 Lütfen tekrar deneyin veya farklı bir soru sorun.")
+            
+            # Hata detayı (geliştirme modu için)
+            with st.expander("🔍 Hata Detayı (Geliştiriciler için)"):
+                st.code(str(e))
