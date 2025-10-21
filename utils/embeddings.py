@@ -43,13 +43,20 @@ def create_embeddings_batch(
     embeddings_list = []
     start_time = time.time()
     
-    for i in range(0, len(texts), batch_size):
-        batch = texts[i:i + batch_size]
-        batch_embeddings = model.encode(batch, show_progress_bar=False)
+    # Güvenli batch size (büyük veri setleri için)
+    safe_batch_size = min(batch_size, 50)
+    
+    for i in range(0, len(texts), safe_batch_size):
+        batch = texts[i:i + safe_batch_size]
+        batch_embeddings = model.encode(
+            batch, 
+            show_progress_bar=False,
+            batch_size=16
+        )
         embeddings_list.extend(batch_embeddings)
         
         if progress_callback:
-            current = min(i + batch_size, len(texts))
+            current = min(i + safe_batch_size, len(texts))
             progress = current / len(texts)
             elapsed = time.time() - start_time
             remaining = (elapsed * len(texts) / current) - elapsed if current > 0 else 0
