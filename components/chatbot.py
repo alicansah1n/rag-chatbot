@@ -65,7 +65,7 @@ def render_chatbot_interface():
         # Soru input
         user_question = st.text_input(
             "❓ Sorunuzu yazın:",
-            placeholder="Örnek: Veri setindeki öğrencilerin ortalama CGPA'sı nedir?",
+            placeholder="Örnek: Veri setini detaylı açıklar mısın?",
             key="user_question_input"
         )
         
@@ -89,6 +89,9 @@ def process_user_question(user_question: str, api_key: str):
     """
     with st.spinner("🤔 Analiz ediyorum..."):
         try:
+            # Toplam kayıt sayısını al
+            total_records = len(st.session_state.get('documents', []))
+            
             # 1. Embedding oluştur
             embedding_model = st.session_state['embedding_model']
             query_embedding = embedding_model.encode([user_question])[0]
@@ -105,8 +108,8 @@ def process_user_question(user_question: str, api_key: str):
                 st.info("💡 Farklı bir soru deneyin veya daha genel bir soru sorun.")
                 return
             
-            # En alakalı ilk 50 kaydı kullan (maliyet optimizasyonu)
-            context = "\n\n---\n\n".join(context_docs[:50])
+            # Tüm bulunan kayıtları kullan (TOP_K kadar)
+            context = "\n\n---\n\n".join(context_docs)
             
             # 4. Prompt oluştur
             system_prompt = """Sen uzman bir veri analisti ve AI asistanısın. Görevin:
@@ -123,16 +126,25 @@ Yanıt formatı:
 - Madde madde veya paragraf halinde düzenle
 - Profesyonel ama anlaşılır bir dil kullan"""
 
-            user_prompt = f"""Aşağıda veri setinden alınmış en alakalı {min(len(context_docs), 50)} kayıt bulunmaktadır.
+            user_prompt = f"""VERİ SETİ BİLGİLERİ:
+- Toplam kayıt sayısı: {total_records:,} satır
+- Analiz için kullanılan örnek: {len(context_docs)} en alakalı kayıt
 
-=== VERİ SETİ KAYITLARI ===
+=== VERİ SETİ ÖRNEKLERİ (En Alakalı {len(context_docs)} Kayıt) ===
 {context}
 
 === KULLANICI SORUSU ===
 {user_question}
 
-=== TALİMATLAR ===
-✓ SADECE yukarıdaki veri kayıtlarını kullan
+=== ÖNEMLİ TALİMATLAR ===
+✓ Eğer soru "kaç satır", "toplam kayıt", "veri seti büyüklüğü" gibi GENEL bilgiler hakkındaysa:
+  → Toplam kayıt sayısını ({total_records:,}) kullan
+  → Veri setinin genel özelliklerinden bahset
+
+✓ Eğer soru spesifik bir analiz, filtreleme veya hesaplama gerektiriyorsa:
+  → Yukarıdaki örnek kayıtlara dayanarak analiz yap
+  → "Analiz edilen {len(context_docs)} kayıt üzerinden..." şeklinde belirt
+
 ✓ İstatistiksel bilgiler varsa bunları vurgula
 ✓ Sayısal verileri tablolar veya maddeler halinde sun
 ✓ Veri setinde cevap yoksa açıkça belirt
@@ -169,9 +181,9 @@ Cevap:"""
             with col1:
                 st.metric("🤖 Model", LLM_MODEL)
             with col2:
-                st.metric("📊 Kaynak Sayısı", min(len(context_docs), 50))
+                st.metric("📊 Analiz Edilen", f"{len(context_docs)}/{total_records:,}")
             with col3:
-                st.metric("🔥 Güven Skoru", "Yüksek")
+                st.metric("💾 Toplam Veri", f"{total_records:,} satır")
             
             # 9. Kaynakları göster
             with st.expander(f"📚 Kullanılan Veri Kaynakları ({min(len(context_docs), 5)} örnek)"):
