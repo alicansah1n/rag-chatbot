@@ -12,6 +12,12 @@
 
 ---
 
+### ✅ Canlı Demo
+🔗 Projeyi hemen deneyin:  
+👉 https://rag-chatbot-ffwf6afnwsekz8p47wxryu.streamlit.app/
+
+---
+
 ## 🎬 Video Demo
 
 <div align="center">
