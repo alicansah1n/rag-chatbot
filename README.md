@@ -152,7 +152,7 @@ Bu proje, **Retrieval-Augmented Generation (RAG)** mimarisi kullanarak CSV veri 
 | Teknoloji | Kullanım Amacı |
 |-----------|----------------|
 | **Python 3.9+** | Ana programlama dili |
-| **OpenAI GPT-3.5-turbo** | Doğal dil işleme ve cevap üretimi |
+| **OpenAI GPT-4.0** | Doğal dil işleme ve cevap üretimi |
 | **Sentence Transformers** | Text embedding (all-MiniLM-L6-v2) |
 | **ChromaDB** | Vector database - semantic search |
 | **LangChain** | RAG pipeline yönetimi |
@@ -315,7 +315,7 @@ rag-chatbot/
 
 ```python
 # LLM Ayarları
-LLM_MODEL = "gpt-3.5-turbo"
+LLM_MODEL = "gpt-4.0"
 LLM_TEMPERATURE = 0.3          # 0 (robotik) - 1 (yaratıcı)
 LLM_MAX_TOKENS = 800           # Maksimum cevap uzunluğu
 
