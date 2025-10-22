@@ -1,5 +1,5 @@
 """
-Chatbot arayüzü bileşeni
+Chatbot arayüzü bileşeni - DENGELI VERSİYON
 """
 import streamlit as st
 import os
@@ -21,22 +21,88 @@ def render_chat_history():
 
 
 def get_api_key():
-    """
-    API key'i alır (secrets veya environment'tan).
-    
-    Returns:
-        str: API key veya None
-    """
-    # Önce Streamlit secrets'tan dene
+    """API key'i alır."""
     try:
         return st.secrets["OPENAI_API_KEY"]
     except:
         pass
     
-    # Sonra environment variable'dan dene
+    from dotenv import load_dotenv
+    load_dotenv()
+    
     api_key = os.getenv("OPENAI_API_KEY")
     if api_key and api_key != "your_api_key_here":
         return api_key
+    
+    return None
+
+
+def is_statistical_query(question: str) -> bool:
+    """Sorunun istatistiksel olup olmadığını kontrol eder."""
+    stat_keywords = [
+        'ortalama', 'average', 'mean', 'ort',
+        'toplam', 'total', 'sum',
+        'maksimum', 'max', 'en yüksek', 'en fazla', 'en büyük',
+        'minimum', 'min', 'en düşük', 'en az', 'en küçük',
+        'medyan', 'median',
+        'standart sapma', 'std', 'sapma',
+        'varyans', 'variance',
+        'yüzde', 'percent', 'oran', 'ratio'
+    ]
+    return any(keyword in question.lower() for keyword in stat_keywords)
+
+
+def get_statistical_answer(question: str, dataset_stats: dict) -> str:
+    """İstatistiksel soruya dataset_stats'tan direkt cevap üretir."""
+    question_lower = question.lower()
+    
+    # Sayısal sütunlar için
+    for col, stats in dataset_stats.get('numeric_stats', {}).items():
+        col_lower = col.lower()
+        
+        if col_lower in question_lower:
+            response = f"### 📊 {col.upper()} İstatistikleri\n\n"
+            response += f"**Kaynak:** Tüm {dataset_stats['total_rows']:,} kayıttan hesaplandı\n\n"
+            
+            if 'ortalama' in question_lower or 'average' in question_lower or 'mean' in question_lower:
+                response += f"📊 **Ortalama:** {stats['mean']:.2f}\n"
+                return response
+            
+            if 'maksimum' in question_lower or 'max' in question_lower or 'en yüksek' in question_lower or 'en fazla' in question_lower or 'en büyük' in question_lower:
+                response += f"⬆️ **Maksimum:** {stats['max']:.2f}\n"
+                return response
+            
+            if 'minimum' in question_lower or 'min' in question_lower or 'en düşük' in question_lower or 'en az' in question_lower or 'en küçük' in question_lower:
+                response += f"⬇️ **Minimum:** {stats['min']:.2f}\n"
+                return response
+            
+            # Genel soru - tüm istatistikler
+            response += f"📊 **Ortalama:** {stats['mean']:.2f}\n"
+            response += f"📍 **Medyan:** {stats['median']:.2f}\n"
+            response += f"📏 **Standart Sapma:** {stats['std']:.2f}\n"
+            response += f"⬇️ **Minimum:** {stats['min']:.2f}\n"
+            response += f"⬆️ **Maksimum:** {stats['max']:.2f}\n"
+            response += f"📦 **Q1 (25%):** {stats['q1']:.2f}\n"
+            response += f"📦 **Q3 (75%):** {stats['q3']:.2f}\n"
+            
+            return response
+    
+    # Kategorik sütunlar için
+    for col, stats in dataset_stats.get('categorical_stats', {}).items():
+        col_lower = col.lower()
+        
+        if col_lower in question_lower:
+            response = f"### 🏷️ {col.upper()} Dağılımı\n\n"
+            response += f"**Kaynak:** Tüm {dataset_stats['total_rows']:,} kayıttan hesaplandı\n\n"
+            
+            response += f"🔢 **Benzersiz değer sayısı:** {stats['unique_count']}\n"
+            response += f"🏆 **En sık:** {stats['most_common']} ({stats['most_common_count']:,} kez, %{stats['most_common_pct']:.1f})\n\n"
+            response += f"📊 **Dağılım:**\n"
+            for key, count in stats['distribution'].items():
+                pct = (count / dataset_stats['total_rows']) * 100
+                response += f"- **{key}:** {count:,} adet (%{pct:.1f})\n"
+            
+            return response
     
     return None
 
@@ -49,6 +115,26 @@ def render_chatbot_interface():
     
     st.divider()
     st.subheader("💬 AI Chatbot - Veri Setiniz Hakkında Soru Sorun")
+    
+    # Kullanım kılavuzu
+    with st.expander("💡 Nasıl Soru Sorulur?", expanded=False):
+        dataset_stats = st.session_state.get('dataset_stats', {})
+        numeric_cols = dataset_stats.get('numeric_columns', [])
+        categorical_cols = dataset_stats.get('categorical_columns', [])
+        
+        st.write("### ✅ Kesin İstatistikler İçin:")
+        if numeric_cols:
+            st.write(f"**Sayısal sütunlar:** `{', '.join(numeric_cols[:5])}`")
+            st.code(f"Örnek: Ortalama {numeric_cols[0]} nedir?", language="text")
+        
+        if categorical_cols:
+            st.write(f"**Kategorik sütunlar:** `{', '.join(categorical_cols[:5])}`")
+            st.code(f"Örnek: {categorical_cols[0]} dağılımı nedir?", language="text")
+        
+        st.write("### 📊 Genel Sorular İçin:")
+        st.write("- **'Bu veri setini açıkla'** → Genel bakış")
+        st.write("- **'Ne amaçla kullanılır?'** → İş yorumları")
+        st.write("- **'Hangi analizler yapılabilir?'** → Öneriler")
     
     # Chat geçmişini göster
     render_chat_history()
@@ -65,7 +151,7 @@ def render_chatbot_interface():
         # Soru input
         user_question = st.text_input(
             "❓ Sorunuzu yazın:",
-            placeholder="Örnek: Veri setini detaylı açıklar mısın?",
+            placeholder="Örnek: Bu veri setini açıklar mısın?",
             key="user_question_input"
         )
         
@@ -80,79 +166,147 @@ def render_chatbot_interface():
 
 
 def process_user_question(user_question: str, api_key: str):
-    """
-    Kullanıcı sorusunu işler ve cevap üretir.
-    
-    Args:
-        user_question: Kullanıcı sorusu
-        api_key: OpenAI API key
-    """
+    """Kullanıcı sorusunu işler ve cevap üretir."""
     with st.spinner("🤔 Analiz ediyorum..."):
         try:
-            # Toplam kayıt sayısını al
-            total_records = len(st.session_state.get('documents', []))
+            dataset_stats = st.session_state.get('dataset_stats', {})
+            total_records = dataset_stats.get('total_rows', len(st.session_state.get('documents', [])))
             
-            # 1. Embedding oluştur
+            # 1. İstatistiksel soru mu kontrol et
+            if is_statistical_query(user_question) and dataset_stats:
+                stat_answer = get_statistical_answer(user_question, dataset_stats)
+                
+                if stat_answer:
+                    st.success("✅ **KESİN Analiz Sonucu (Tüm Veri Setinden):**")
+                    st.markdown(stat_answer)
+                    
+                    st.session_state['chat_history'].append({
+                        'question': user_question,
+                        'answer': stat_answer
+                    })
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("📊 Veri Kaynağı", "Hesaplanmış İstatistikler")
+                    with col2:
+                        st.metric("💾 Toplam Veri", f"{total_records:,} satır")
+                    with col3:
+                        st.metric("⚡ Güvenilirlik", "100%")
+                    
+                    st.info("💡 Bu cevap **TÜM** veri setinden hesaplanan kesin istatistiklere dayanmaktadır.")
+                    return
+            
+            # 2. RAG kullan
             embedding_model = st.session_state['embedding_model']
             query_embedding = embedding_model.encode([user_question])[0]
             
-            # 2. Benzer dökümanları bul
             collection = st.session_state['collection']
             results = query_collection(collection, query_embedding, TOP_K_RESULTS)
             
-            # 3. Context oluştur
             context_docs = results['documents'][0]
             
             if not context_docs:
-                st.error("❌ Veri setinde ilgili bilgi bulunamadı.")
-                st.info("💡 Farklı bir soru deneyin veya daha genel bir soru sorun.")
+                st.error("❌ **Üzgünüm, bu soruyu cevaplayamıyorum.**")
+                st.warning("**Neden:** Veri setinde bu soruyla alakalı hiçbir bilgi bulunamadı.")
+                st.info("💡 **Önerim:** Daha genel bir soru sorun veya farklı kelimeler kullanın.")
                 return
             
-            # Tüm bulunan kayıtları kullan (TOP_K kadar)
             context = "\n\n---\n\n".join(context_docs)
             
-            # 4. Prompt oluştur
-            system_prompt = """Sen uzman bir veri analisti ve AI asistanısın. Görevin:
+            # 3. DENGELI PROMPT
+            has_numeric = len(dataset_stats.get('numeric_columns', [])) > 0
+            has_categorical = len(dataset_stats.get('categorical_columns', [])) > 0
+            
+            numeric_cols_str = ", ".join(dataset_stats.get('numeric_columns', []))
+            categorical_cols_str = ", ".join(dataset_stats.get('categorical_columns', []))
+            
+            system_prompt = """Sen profesyonel bir veri analistisin. Hem hesaplama yaparsın hem yorumlarsın.
 
-1. Verilen veri setindeki bilgilere dayanarak kullanıcının sorusunu yanıtlamak
-2. Yanıtlarını açık, net ve profesyonel Türkçe ile sunmak
-3. Sayısal analizler ve istatistikler sunmak
-4. Veri setinde yeterli bilgi yoksa dürüstçe belirtmek
-5. Gerektiğinde örneklerle açıklamak
+İKİ TÜR SORU VAR:
 
-Yanıt formatı:
-- Kısa ve öz bir özet ile başla
-- Detaylı analiz ve sayısal veriler sun
-- Madde madde veya paragraf halinde düzenle
-- Profesyonel ama anlaşılır bir dil kullan"""
+═══════════════════════════════════════
+📊 TİP 1: HESAPLAMA/İSTATİSTİK SORULARI
+═══════════════════════════════════════
+Örnekler:
+- "Ortalama/toplam/maksimum X nedir?"
+- "Kaç kişi Y özelliğine sahip?"
+- "X ile Y arasındaki fark?"
+
+YAPMAN GEREKEN:
+✅ Verilen kayıtlardan hesapla
+✅ Net rakam ver
+✅ "Bu X kayıttan hesaplandı" de
+✅ Yetersizse: "Kesin sonuç için tüm veriyi işlemek gerek" de
+
+═══════════════════════════════════════
+💡 TİP 2: GENEL/YORUMLAMA SORULARI
+═══════════════════════════════════════
+Örnekler:
+- "Bu veri setini açıkla"
+- "Ne amaçla kullanılır?"
+- "İş dünyasında ne anlama gelir?"
+- "Hangi kararlar alınabilir?"
+
+YAPMAN GEREKEN:
+✅ Veri setinin yapısını açıkla
+✅ Sütunları yorumla
+✅ İş/bilim açısından ne anlama geldiğini söyle
+✅ Kullanım alanlarını öner
+✅ Hangi soruların cevaplanabileceğini belirt
+
+ÖRNEK CEVAP (Sigorta veri seti için):
+"Bu veri seti sigorta şirketlerinin prim belirleme için kullanır. 
+Yaş, BMI, sigara gibi risk faktörleri ile sigorta maliyeti arasındaki 
+ilişkiyi analiz eder. Şirketler bu verileri kullanarak:
+- Risk profili oluşturur
+- Prim fiyatlandırması yapar
+- Yüksek riskli müşterileri tespit eder"
+
+═══════════════════════════════════════
+❌ YASAKLAR (SADECE BUNLAR!)
+═══════════════════════════════════════
+❌ Veri setinde OLMAYAN spesifik bilgileri UYDURMA (isim, adres, vb.)
+❌ Kesin olmayan rakamları kesinmiş gibi sunma
+❌ "Muhtemelen X kişidir" gibi spesifik tahminler yapma
+
+✅ İZİN VERİLENLER
+✅ Genel yorumlar: "Bu veri seti muhtemelen X amacıyla toplanmış"
+✅ İş yorumları: "Bu bilgiler Y için kullanılabilir"
+✅ Öneriler: "Z analizi yapılabilir"
+✅ Hesaplamalar: Verilen kayıtlardan hesapla
+
+CEVAP FORMATI:
+1. Direkt cevap
+2. Detaylı açıklama
+3. Kaynak bilgisi (hesaplama yapıldıysa)"""
 
             user_prompt = f"""VERİ SETİ BİLGİLERİ:
-- Toplam kayıt sayısı: {total_records:,} satır
-- Analiz için kullanılan örnek: {len(context_docs)} en alakalı kayıt
+- Toplam: {total_records:,} kayıt
+- Analiz için kullanılan: {len(context_docs)} en alakalı kayıt
+- Sayısal sütunlar: {numeric_cols_str or "Yok"}
+- Kategorik sütunlar: {categorical_cols_str or "Yok"}
 
-=== VERİ SETİ ÖRNEKLERİ (En Alakalı {len(context_docs)} Kayıt) ===
+═══════════════════════════════════════
+VERİ ÖRNEKLERİ (İlk {len(context_docs)} kayıt):
+═══════════════════════════════════════
 {context}
 
-=== KULLANICI SORUSU ===
+═══════════════════════════════════════
+KULLANICI SORUSU:
+═══════════════════════════════════════
 {user_question}
 
-=== ÖNEMLİ TALİMATLAR ===
-✓ Eğer soru "kaç satır", "toplam kayıt", "veri seti büyüklüğü" gibi GENEL bilgiler hakkındaysa:
-  → Toplam kayıt sayısını ({total_records:,}) kullan
-  → Veri setinin genel özelliklerinden bahset
+═══════════════════════════════════════
+TALİMATLAR:
+═══════════════════════════════════════
+1. Soru HESAPLAMA gerektiriyorsa → Kayıtlardan hesapla + "X kayıttan hesaplandı" de
+2. Soru GENEL/YORUM gerektiriyorsa → Veri yapısını yorumla, kullanım alanlarını söyle
+3. SPESİFİK bilgi yoksa → "Bu bilgi veri setinde yok" de
+4. Türkçe sütun adı varsa → İngilizce karşılığını bul ve kullan
 
-✓ Eğer soru spesifik bir analiz, filtreleme veya hesaplama gerektiriyorsa:
-  → Yukarıdaki örnek kayıtlara dayanarak analiz yap
-  → "Analiz edilen {len(context_docs)} kayıt üzerinden..." şeklinde belirt
-
-✓ İstatistiksel bilgiler varsa bunları vurgula
-✓ Sayısal verileri tablolar veya maddeler halinde sun
-✓ Veri setinde cevap yoksa açıkça belirt
-✓ Türkçe dilbilgisi kurallarına özen göster
-
-Cevap:"""
+CEVAP VER:"""
             
-            # 5. LLM'den cevap al
+            # 4. LLM çağrısı
             client = OpenAI(api_key=api_key)
             response = client.chat.completions.create(
                 model=LLM_MODEL,
@@ -166,27 +320,34 @@ Cevap:"""
             )
             answer = response.choices[0].message.content
             
-            # 6. Cevabı göster
+            # 5. Cevap gösterimi
             st.success("✅ **Analiz Sonucu:**")
             st.markdown(answer)
             
-            # 7. Geçmişe kaydet
             st.session_state['chat_history'].append({
                 'question': user_question,
                 'answer': answer
             })
             
-            # 8. Meta bilgiler
+            # 6. Meta bilgiler
             col1, col2, col3 = st.columns(3)
             with col1:
                 st.metric("🤖 Model", LLM_MODEL)
             with col2:
-                st.metric("📊 Analiz Edilen", f"{len(context_docs)}/{total_records:,}")
+                st.metric("📊 Kullanılan Veri", f"{len(context_docs)}/{total_records:,}")
             with col3:
-                st.metric("💾 Toplam Veri", f"{total_records:,} satır")
+                reliability = int((len(context_docs) / total_records) * 100)
+                st.metric("⚡ Kapsam", f"~{reliability}%")
             
-            # 9. Kaynakları göster
-            with st.expander(f"📚 Kullanılan Veri Kaynakları ({min(len(context_docs), 5)} örnek)"):
+            # 7. UYARI (sadece hesaplama sorularında)
+            if is_statistical_query(user_question):
+                st.warning(f"""⚠️ **NOT:** Bu hesaplama {len(context_docs)} kayıttan yapıldı.
+
+**Kesin istatistik için:**
+Sütun isimlerini kullanın: `{numeric_cols_str.split(',')[0] if numeric_cols_str else 'N/A'}`""")
+            
+            # 8. Kaynaklar
+            with st.expander(f"📚 Kullanılan {min(len(context_docs), 5)} Veri Kaynağı"):
                 for i, doc in enumerate(context_docs[:5], 1):
                     st.markdown(f"**📄 Kaynak {i}:**")
                     st.code(doc[:400] + ("..." if len(doc) > 400 else ""), language="text")
@@ -196,14 +357,12 @@ Cevap:"""
         except Exception as e:
             st.error(f"❌ Bir hata oluştu: {str(e)}")
             
-            # Detaylı hata mesajı (debug için)
             if "API key" in str(e) or "api_key" in str(e):
-                st.info("💡 API key'inizi kontrol edin. Streamlit Secrets veya .env dosyasında doğru tanımlandığından emin olun.")
+                st.info("💡 API key'inizi kontrol edin.")
             elif "rate limit" in str(e).lower():
-                st.info("💡 OpenAI rate limit aşıldı. Birkaç saniye bekleyip tekrar deneyin.")
+                st.info("💡 OpenAI rate limit aşıldı. Bekleyin.")
             else:
-                st.info("💡 Lütfen tekrar deneyin veya farklı bir soru sorun.")
+                st.info("💡 Tekrar deneyin.")
             
-            # Hata detayı (geliştirme modu için)
-            with st.expander("🔍 Hata Detayı (Geliştiriciler için)"):
+            with st.expander("🔍 Hata Detayı"):
                 st.code(str(e))

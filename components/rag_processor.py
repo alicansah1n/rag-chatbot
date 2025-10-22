@@ -3,7 +3,8 @@ RAG işleme bileşeni - Embedding ve Vector Store hazırlığı
 """
 import streamlit as st
 import time
-from utils.data_loader import prepare_documents
+import pandas as pd
+from utils.data_loader import prepare_documents, get_column_types
 from utils.embeddings import load_embedding_model, create_embeddings_batch
 from utils.vector_store import (
     create_chroma_client,
@@ -15,6 +16,57 @@ from config.settings import (
     BATCH_SIZE,
     COLLECTION_NAME
 )
+
+
+def calculate_dataset_statistics(df: pd.DataFrame) -> dict:
+    """
+    Veri setinin istatistiklerini önceden hesaplar.
+    
+    Args:
+        df: Pandas DataFrame
+        
+    Returns:
+        dict: Hesaplanmış tüm istatistikler
+    """
+    numeric_cols, categorical_cols = get_column_types(df)
+    
+    stats = {
+        'total_rows': len(df),
+        'total_columns': len(df.columns),
+        'numeric_columns': numeric_cols,
+        'categorical_columns': categorical_cols,
+        'numeric_stats': {},
+        'categorical_stats': {}
+    }
+    
+    # Sayısal sütunlar için istatistikler
+    for col in numeric_cols:
+        stats['numeric_stats'][col] = {
+            'mean': float(df[col].mean()),
+            'median': float(df[col].median()),
+            'std': float(df[col].std()),
+            'min': float(df[col].min()),
+            'max': float(df[col].max()),
+            'q1': float(df[col].quantile(0.25)),
+            'q3': float(df[col].quantile(0.75)),
+            'missing': int(df[col].isna().sum()),
+            'missing_pct': float(df[col].isna().sum() / len(df) * 100)
+        }
+    
+    # Kategorik sütunlar için istatistikler
+    for col in categorical_cols:
+        value_counts = df[col].value_counts()
+        stats['categorical_stats'][col] = {
+            'unique_count': int(df[col].nunique()),
+            'most_common': str(value_counts.index[0]) if len(value_counts) > 0 else None,
+            'most_common_count': int(value_counts.iloc[0]) if len(value_counts) > 0 else 0,
+            'most_common_pct': float(value_counts.iloc[0] / len(df) * 100) if len(value_counts) > 0 else 0,
+            'distribution': {str(k): int(v) for k, v in value_counts.head(10).items()},
+            'missing': int(df[col].isna().sum()),
+            'missing_pct': float(df[col].isna().sum() / len(df) * 100)
+        }
+    
+    return stats
 
 
 def render_rag_preparation(df):
@@ -33,9 +85,29 @@ def render_rag_preparation(df):
         
         try:
             # ═══════════════════════════════════════
-            # ADIM 1/4: VERİ HAZIRLAMA
+            # ADIM 0: İSTATİSTİK HESAPLAMA (YENİ!)
             # ═══════════════════════════════════════
-            main_status.markdown("### 🔄 Adım 1/4: Veri hazırlanıyor...")
+            main_status.markdown("### 🔄 Adım 0/5: İstatistikler hesaplanıyor...")
+            step0_progress = st.progress(0)
+            step0_status = st.empty()
+            
+            step0_status.text("📊 Veri seti analiz ediliyor...")
+            step0_progress.progress(0.3)
+            
+            dataset_stats = calculate_dataset_statistics(df)
+            
+            step0_progress.progress(1.0)
+            step0_status.empty()
+            step0_progress.empty()
+            st.success(f"✅ Adım 0 tamamlandı: {len(df):,} satır ve {len(df.columns)} sütun analiz edildi")
+            main_progress.progress(0.15)
+            
+            time.sleep(0.3)
+            
+            # ═══════════════════════════════════════
+            # ADIM 1/5: VERİ HAZIRLAMA
+            # ═══════════════════════════════════════
+            main_status.markdown("### 🔄 Adım 1/5: Veri hazırlanıyor...")
             step1_progress = st.progress(0)
             step1_status = st.empty()
             
@@ -52,7 +124,7 @@ def render_rag_preparation(df):
             step1_status.empty()
             step1_progress.empty()
             st.success(f"✅ Adım 1 tamamlandı: {len(documents):,} döküman oluşturuldu")
-            main_progress.progress(0.25)
+            main_progress.progress(0.30)
             
             with st.expander("🔍 Örnek Dökümanlar (İlk 3)"):
                 for i in range(min(3, len(documents))):
@@ -61,9 +133,9 @@ def render_rag_preparation(df):
             time.sleep(0.3)
             
             # ═══════════════════════════════════════
-            # ADIM 2/4: EMBEDDING MODEL YÜKLEME
+            # ADIM 2/5: EMBEDDING MODEL YÜKLEME
             # ═══════════════════════════════════════
-            main_status.markdown("### 🔄 Adım 2/4: Embedding modeli yükleniyor...")
+            main_status.markdown("### 🔄 Adım 2/5: Embedding modeli yükleniyor...")
             step2_progress = st.progress(0)
             step2_status = st.empty()
             
@@ -76,14 +148,14 @@ def render_rag_preparation(df):
             step2_status.empty()
             step2_progress.empty()
             st.success(f"✅ Adım 2 tamamlandı: Model yüklendi ({EMBEDDING_MODEL})")
-            main_progress.progress(0.50)
+            main_progress.progress(0.45)
             
             time.sleep(0.3)
             
             # ═══════════════════════════════════════
-            # ADIM 3/4: EMBEDDING OLUŞTURMA
+            # ADIM 3/5: EMBEDDING OLUŞTURMA
             # ═══════════════════════════════════════
-            main_status.markdown("### 🔄 Adım 3/4: Embeddings oluşturuluyor...")
+            main_status.markdown("### 🔄 Adım 3/5: Embeddings oluşturuluyor...")
             step3_progress = st.progress(0)
             step3_status = st.empty()
             
@@ -114,14 +186,14 @@ def render_rag_preparation(df):
                 f"({int(total_time/60)}dk {int(total_time%60)}sn)"
             )
             st.info(f"📐 Embedding boyutu: {embeddings.shape[0]:,} × {embeddings.shape[1]} boyut")
-            main_progress.progress(0.75)
+            main_progress.progress(0.70)
             
             time.sleep(0.3)
             
             # ═══════════════════════════════════════
-            # ADIM 4/4: VECTOR STORE KAYDETME
+            # ADIM 4/5: VECTOR STORE KAYDETME
             # ═══════════════════════════════════════
-            main_status.markdown("### 🔄 Adım 4/4: Vector store'a kaydediliyor...")
+            main_status.markdown("### 🔄 Adım 4/5: Vector store'a kaydediliyor...")
             step4_progress = st.progress(0)
             step4_status = st.empty()
             
@@ -141,12 +213,32 @@ def render_rag_preparation(df):
             step4_status.empty()
             step4_progress.empty()
             st.success("✅ Adım 4 tamamlandı: Vector store hazır")
-            main_progress.progress(1.0)
+            main_progress.progress(0.90)
+            
+            time.sleep(0.3)
+            
+            # ═══════════════════════════════════════
+            # ADIM 5/5: SESSION STATE'E KAYDETME (YENİ!)
+            # ═══════════════════════════════════════
+            main_status.markdown("### 🔄 Adım 5/5: Sistem hazırlanıyor...")
+            step5_progress = st.progress(0)
+            step5_status = st.empty()
+            
+            step5_status.text("💾 Veriler hafızaya kaydediliyor...")
+            step5_progress.progress(0.5)
             
             # Session state'e kaydet
             st.session_state['collection'] = collection
             st.session_state['embedding_model'] = embedding_model
             st.session_state['documents'] = documents
+            st.session_state['dataset_stats'] = dataset_stats  # ← YENİ!
+            st.session_state['dataframe'] = df  # ← YENİ! (Chatbot için)
+            
+            step5_progress.progress(1.0)
+            step5_status.empty()
+            step5_progress.empty()
+            st.success("✅ Adım 5 tamamlandı: Tüm veriler hafızada")
+            main_progress.progress(1.0)
             
             time.sleep(0.5)
             
@@ -156,6 +248,19 @@ def render_rag_preparation(df):
             
             # Başarı mesajı
             st.success("🎉 Tüm adımlar başarıyla tamamlandı!")
+            
+            # İstatistik özeti göster
+            with st.expander("📊 Hesaplanan İstatistikler Özeti"):
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("📊 Toplam Satır", f"{dataset_stats['total_rows']:,}")
+                with col2:
+                    st.metric("📁 Toplam Sütun", dataset_stats['total_columns'])
+                with col3:
+                    st.metric("🔢 Sayısal Sütun", len(dataset_stats['numeric_columns']))
+                
+                st.write("**✅ Chatbot artık tüm istatistiklere anında erişebilir!**")
+            
             st.info("📊 Sistem hazır! Aşağıdan chatbot'a soru sorabilirsiniz.")
             
         except Exception as e:

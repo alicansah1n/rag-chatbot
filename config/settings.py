@@ -15,7 +15,7 @@ LAYOUT = "wide"
 # ═══════════════════════════════════════════
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"    # Metin vektörleştirme modeli
 LLM_MODEL = "gpt-4o"                    # Cevap üretici AI modeli
-LLM_TEMPERATURE = 0.3                   # Yaratıcılık seviyesi (0-1)
+LLM_TEMPERATURE = 0.1                   # ✅ 0.3 → 0.1 (daha az uydurma)
 LLM_MAX_TOKENS = 1500                   # Maksimum cevap uzunluğu
 LLM_TOP_P = 0.9                         # Kelime çeşitliliği kontrolü
 

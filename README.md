@@ -16,84 +16,13 @@
 
 <div align="center">
 
-[![RAG Chatbot - Full Demo](https://cdn.loom.com/sessions/thumbnails/e65aefd5ad88412eb6cb63b6e0a72c82-with-play.gif)](https://www.loom.com/share/e65aefd5ad88412eb6cb63b6e0a72c82?sid=ef5d2676-17bd-486a-bab3-c237cbbe3d76)
+[![RAG Chatbot - Full Demo](https://cdn.loom.com/sessions/thumbnails/e65aefd5ad88412eb6cb63b6e0a72c82-with-play.gif)](https://www.loom.com/share/6cd581b062664c7f9e5e0e818801dbca?sid=48bbab58-5609-4ef6-b0a5-be3096536eb0)
 
 **🎥 Projenin tam özellik tanıtımı**
 
 *CSV yükleme, veri analizi, chatbot kullanımı ve AI-powered görselleştirmeler*
 
-[▶️ Loom'da İzle](https://www.loom.com/share/e65aefd5ad88412eb6cb63b6e0a72c82?sid=ef5d2676-17bd-486a-bab3-c237cbbe3d76)
-
-</div>
-
----
-
-</div>
-
-## 📸 Proje Görselleri
-
-<div align="center">
-
-### 🏠 Ana Sayfa - Veri Yükleme
-![Ana Sayfa](assets/screenshots/1-homepage.png)
-
-*CSV dosyası yükleme ve veri seti önizleme*
-
----
-
-### 📊 Veri Seti Bilgileri
-![Veri Bilgileri](assets/screenshots/2-data-info.png)
-
-*Otomatik veri analizi ve istatistiksel özet*
-
----
-
-### 📈 İstatistiksel Analiz
-![İstatistik](assets/screenshots/3-statistics.png)
-
-![İstatistik](assets/screenshots/statisc2.png)
-
-*Detaylı istatistiksel analiz ve veri dağılımları*
-
----
-
-### 🔗 Korelasyon Analizi
-![Korelasyon](assets/screenshots/4-correlation.png)
-
-![Korelasyon](assets/screenshots/4-correlation1.png)
-
-*Değişkenler arası ilişki analizi ve heatmap*
-
----
-
-### 📉 Görselleştirmeler
-![Grafikler](assets/screenshots/charts1.png)
-
-![Grafikler](assets/screenshots/charts2.png)
-
-*10+ farklı grafik türü ile veri görselleştirme*
-
----
-
-### 💬 Chatbot Arayüzü
-![Chatbot](assets/screenshots/raghazırlık1.png)
-
-![Chatbot](assets/screenshots/rag2.png)
-
-![Chatbot](assets/screenshots/rag3.png)
-
-![Chatbot](assets/screenshots/rag4.png)
-
-*Doğal dil ile veri sorgulama ve AI-powered cevaplar*
-
----
-
-### 🤖 AI İçgörüler
-![AI Insights](assets/screenshots/charts4.png)
-
-![AI Insights](assets/screenshots/charts3.png)
-
-*GPT-powered grafik yorumlama ve otomatik içgörüler*
+[▶️ Loom'da İzle](https://www.loom.com/share/6cd581b062664c7f9e5e0e818801dbca?sid=48bbab58-5609-4ef6-b0a5-be3096536eb0)
 
 </div>
 
