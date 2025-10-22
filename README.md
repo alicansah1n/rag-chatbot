@@ -80,10 +80,6 @@
 
 ![Chatbot](assets/screenshots/rag2.png)
 
-![Chatbot](assets/screenshots/rag3.png)
-
-![Chatbot](assets/screenshots/rag4.png)
-
 *Doğal dil ile veri sorgulama ve AI-powered cevaplar*
 
 ---
